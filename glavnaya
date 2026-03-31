@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>АННА НАДОЛЬСКАЯ | Тренер по голосу и речи</title>
+    <!-- Шрифты: Playfair Display (для стиля Vogue) и Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary-dark: #0f172a; /* Глубокий темно-синий */
+            --accent-blue: #2563eb;  /* Насыщенный синий */
+            --ice-blue: #f0f9ff;     /* Ледяной голубой для фона */
+            --white: #ffffff;
+            --line-color: #e2e8f0;   /* Цвет тонких линий */
+            --serif: 'Playfair Display', serif;
+            --sans: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--sans);
+            background-color: var(--white);
+            color: var(--primary-dark);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* --- Навигация --- */
+        nav {
+            padding: 40px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--line-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--primary-dark);
+            margin-left: 30px;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.6;
+        }
+
+        /* --- Главный экран --- */
+        .hero {
+            padding: 100px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .hero-content {
+            z-index: 2;
+        }
+
+        .hero-label {
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-size: 0.75rem;
+            color: var(--accent-blue);
+            margin-bottom: 20px;
+            display: block;
+            font-weight: 700;
+        }
+
+        .hero h1 {
+            font-family: var(--serif);
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            line-height: 1.1;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .hero h1 span {
+            font-style: italic;
+            display: block;
+            margin-left: 40px;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            max-width: 450px;
+            color: var(--primary-dark);
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .hero-image {
+            position: relative;
+            background-color: var(--ice-blue);
+            height: 600px;
+            border-radius: 2px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-image::after {
+            content: "";
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* --- Секция "Для кого" --- */
+        .manifesto {
+            background-color: var(--primary-dark);
+            color: var(--white);
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .manifesto-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .manifesto-item {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 30px;
+        }
+
+        .manifesto-item h3 {
+            font-family: var(--serif);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .manifesto-item p {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            font-weight: 300;
+            line-height: 1.7;
+        }
+
+        /* --- Блок Услуги --- */
+        .services {
+            padding: 150px 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 80px;
+            border-bottom: 1px solid var(--line-color);
+            padding-bottom: 30px;
+        }
+
+        .section-header h2 {
+            font-family: var(--serif);
+            font-size: 3rem;
+            font-weight: 400;
+        }
+
+        .service-row {
+            display: flex;
+            padding: 60px 0;
+            border-bottom: 1px solid var(--line-color);
+            transition: background 0.4s;
+            text-decoration: none;
+            color: inherit;
+            align-items: center;
+        }
+
+        .service-row:hover {
+            background-color: var(--ice-blue);
+            padding-left: 20px;
+        }
+
+        .service-number {
+            font-family: var(--serif);
+            font-size: 1rem;
+            margin-right: 60px;
+            color: var(--accent-blue);
+        }
+
+        .service-title {
+            flex: 1;
+        }
+
+        .service-title h3 {
+            font-family: var(--serif);
+            font-size: 2rem;
+            font-weight: 400;
+        }
+
+        .service-meta {
+            text-align: right;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            max-width: 300px;
+        }
+
+        /* --- Контакты --- */
+        .contact-footer {
+            padding: 120px 0;
+            text-align: center;
+            background: linear-gradient(to bottom, var(--white), var(--ice-blue));
+        }
+
+        .big-link {
+            font-family: var(--serif);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            text-decoration: none;
+            color: var(--primary-dark);
+            display: inline-block;
+            margin: 40px 0;
+            transition: transform 0.3s;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        .big-link:hover {
+            transform: translateY(-5px);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            flex-wrap: wrap;
+        }
+
+        .social-links a {
+            text-decoration: none;
+            color: var(--primary-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .social-links a i {
+            margin-right: 8px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            padding: 60px 0;
+            border-top: 1px solid var(--line-color);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .footer-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .vogue-btn {
+            background: var(--primary-dark);
+            color: var(--white);
+            padding: 22px 45px;
+            text-decoration: none;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .vogue-btn:hover {
+            background: var(--accent-blue);
+        }
+
+        @media (max-width: 900px) {
+            .hero { grid-template-columns: 1fr; padding-top: 60px; }
+            .hero-image { height: 400px; order: -1; }
+            .section-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .service-row { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .service-meta { text-align: left; }
+            .footer-flex { flex-direction: column; text-align: center; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <nav>
+            <div class="logo">Анна Надольская</div>
+            <div class="nav-links">
+                <a href="#about">Обо мне</a>
+                <a href="#services">Услуги</a>
+                <a href="#contacts">Контакты</a>
+            </div>
+        </nav>
+    </div>
+
+    <section class="hero container">
+        <div class="hero-content">
+            <span class="hero-label">Тренер по публичным выступлениям</span>
+            <h1>Искусство <span>Вашей Речи</span></h1>
+            <p>Облекаю ваши смыслы в слова. Помогаю экспертам говорить просто, емко и убедительно, чтобы клиенты понимали ценность с первой минуты.</p>
+            <a href="https://t.me/your_username" class="vogue-btn">Написать в Telegram</a>
+        </div>
+        <div class="hero-image">
+            <span style="color: var(--accent-blue); font-family: var(--serif); font-style: italic; opacity: 0.4; font-size: 1.2rem;">Портрет эксперта</span>
+        </div>
+    </section>
+
+    <section class="manifesto" id="about">
+        <div class="container">
+            <div class="section-header" style="border-color: rgba(255,255,255,0.1);">
+                <h2 style="color: var(--white);">Для кого это?</h2>
+            </div>
+            <div class="manifesto-grid">
+                <div class="manifesto-item">
+                    <h3>Ценность</h3>
+                    <p>У вас есть крутой продукт или услуга, но трудно объяснить их ценность так, чтобы аудитория поняла вас сразу.</p>
+                </div>
+                <div class="manifesto-item">
+                    <h3>Лаконичность</h3>
+                    <p>Вам сложно говорить о себе кратко, эффективно и без «воды». Мы учим говорить емко и по существу.</p>
+                </div>
+                <div class="manifesto-item">
+                    <h3>Проявление</h3>
+                    <p>Вы хотите уверенно чувствовать себя на видео, нетворкингах и живых мероприятиях, создавая образ лидера.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="services container" id="services">
+        <div class="section-header">
+            <h2>Программы</h2>
+            <p style="text-transform: uppercase; font-size: 0.8rem; letter-spacing: 2px;">Форматы работы</p>
+        </div>
+
+        <div class="service-row">
+            <div class="service-number">01</div>
+            <div class="service-title">
+                <h3>Наставничество</h3>
+            </div>
+            <div class="service-meta">
+                Индивидуально / 7-10 недель / Упаковка мыслей в слова
+            </div>
+        </div>
+
+        <div class="service-row">
+            <div class="service-number">02</div>
+            <div class="service-title">
+                <h3>Дизайн голоса</h3>
+            </div>
+            <div class="service-meta">
+                Консультации по речи и уверенному звучанию
+            </div>
+        </div>
+
+        <div class="service-row">
+            <div class="service-number">03</div>
+            <div class="service-title">
+                <h3>Публичный питч</h3>
+            </div>
+            <div class="service-meta">
+                Подготовка к выступлениям и конференциям
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-footer" id="contacts">
+        <div class="container">
+            <span class="hero-label">Связаться со мной</span>
+            <br>
+            <a href="https://t.me/your_username" class="big-link">Записаться в Telegram</a>
+            
+            <div class="social-links">
+                <a href="#"><i data-lucide="send"></i> Телеграм-канал</a>
+                <a href="#"><i data-lucide="layout"></i> Сообщество ВК</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="container">
+        <div class="footer-flex">
+            <div>
+                <p><strong>© 2024 Анна Надольская</strong></p>
+                <p style="margin-top: 5px; opacity: 0.6;">Облекаю ваши смыслы в слова</p>
+            </div>
+            <div>
+                <p>Статус: Самозанятая</p>
+                <p>Надольская Анна Александровна</p>
+                <p>ИНН: 770012345678</p>
+            </div>
+            <div style="opacity: 0.5;">
+                Дизайн: Эдиториал Концепт
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Инициализация иконок
+        lucide.createIcons();
+    </script>
+</body>
+</html>
