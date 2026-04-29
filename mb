@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Конспект · Мария Бразговская</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<style>
+/* ─── TOKENS ─────────────────────────────────── */
+:root {
+  --bg:       #faf8f5;
+  --bg2:      #f3f0ea;
+  --bg3:      #ede8de;
+  --ink:      #1a1714;
+  --ink2:     #4a4540;
+  --ink3:     #8a8278;
+  --gold:     #b8892a;
+  --gold-lt:  #e8c96a;
+  --line:     rgba(26,23,20,.1);
+  --line2:    rgba(26,23,20,.06);
+  --red:      #c94040;
+  --sidebar:  300px;
+  --radius:   14px;
+  --shadow:   0 2px 20px rgba(26,23,20,.07);
+  --shadow2:  0 8px 40px rgba(26,23,20,.12);
+}
+
+/* ─── RESET ──────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:'DM Sans',sans-serif;
+  font-weight:400;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  overflow-x:hidden;
+  /* тонкая зерновая текстура */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+}
+
+/* ─── PROGRESS ──────────────────────────────── */
+#progress{
+  position:fixed;top:0;left:0;right:0;height:2px;z-index:999;
+  background:linear-gradient(90deg,var(--gold),var(--gold-lt));
+  width:0%;transition:width .3s ease;
+  transform-origin:left;
+}
+
+/* ─── LAYOUT ─────────────────────────────────── */
+.shell{display:flex;min-height:100vh}
+
+/* ─── SIDEBAR ────────────────────────────────── */
+.nav{
+  width:var(--sidebar);
+  flex-shrink:0;
+  position:fixed;top:0;left:0;bottom:0;
+  background:var(--bg);
+  border-right:1px solid var(--line);
+  z-index:200;
+  display:flex;flex-direction:column;
+  transition:transform .4s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;
+}
+.nav::-webkit-scrollbar{width:0}
+.nav.hidden{transform:translateX(-100%)}
+
+.nav-head{
+  padding:40px 32px 28px;
+  border-bottom:1px solid var(--line);
+}
+.nav-eyebrow{
+  font-size:10px;font-weight:600;letter-spacing:3px;
+  text-transform:uppercase;color:var(--gold);margin-bottom:10px;
+}
+.nav-title{
+  font-family:'DM Serif Display',serif;
+  font-size:22px;line-height:1.25;color:var(--ink);
+}
+.nav-sub{
+  margin-top:6px;font-size:13px;color:var(--ink3);font-weight:300;
+}
+
+.nav-list{flex:1;padding:20px 0}
+
+.nav-item{
+  display:flex;align-items:center;gap:0;
+  padding:0;
+  cursor:pointer;
+  background:none;border:none;
+  width:100%;text-align:left;
+  font-family:'DM Sans',sans-serif;
+  color:var(--ink2);
+  position:relative;
+  transition:color .2s;
+}
+.nav-item::before{
+  content:'';
+  position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:var(--gold);opacity:0;
+  transition:opacity .2s;
+}
+.nav-item.on::before{opacity:1}
+.nav-item.on{color:var(--ink)}
+
+.nav-item-inner{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 32px;width:100%;
+  border-radius:0;
+  transition:background .2s;
+}
+.nav-item:hover .nav-item-inner{background:var(--bg2)}
+.nav-item.on .nav-item-inner{background:var(--bg2)}
+
+.nav-num{
+  font-family:'DM Serif Display',serif;
+  font-size:13px;font-style:italic;
+  color:var(--gold);min-width:20px;
+}
+.nav-label{font-size:13px;font-weight:400;line-height:1.35;color:inherit}
+
+.nav-footer{
+  padding:24px 32px;border-top:1px solid var(--line);
+  font-size:11px;color:var(--ink3);line-height:1.6;font-weight:300;
+}
+
+/* ─── TOGGLE BUTTON ──────────────────────────── */
+.toggle{
+  position:fixed;
+  top:20px;
+  left:var(--sidebar);
+  z-index:300;
+  width:32px;height:32px;
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-left:none;
+  border-radius:0 8px 8px 0;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:left .4s cubic-bezier(.4,0,.2,1),background .2s;
+  color:var(--ink3);
+  box-shadow:2px 0 8px rgba(26,23,20,.06);
+}
+.toggle:hover{background:var(--bg2);color:var(--ink)}
+.toggle.out{left:0}
+
+/* ─── MAIN ───────────────────────────────────── */
+.main{
+  margin-left:var(--sidebar);
+  flex:1;
+  transition:margin-left .4s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+  min-height:100vh;
+}
+.main.wide{margin-left:0}
+
+.page{
+  flex:1;
+  padding:72px 80px 160px;
+  max-width:780px;
+}
+
+/* ─── CHAPTER ─────────────────────────────────── */
+.ch{display:none;animation:up .5s cubic-bezier(.16,1,.3,1)}
+.ch.on{display:block}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── CHAPTER HEADER ──────────────────────────── */
+.ch-head{margin-bottom:56px}
+
+.ch-tag{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:20px;
+}
+.ch-tag::after{content:'';width:40px;height:1px;background:var(--gold);opacity:.5}
+
+.ch-h1{
+  font-family:'DM Serif Display',serif;
+  font-size:52px;line-height:1.08;
+  color:var(--ink);
+  margin-bottom:20px;
+  letter-spacing:-.5px;
+}
+
+.ch-lead{
+  font-size:17px;font-weight:300;
+  color:var(--ink2);line-height:1.7;
+  max-width:560px;
+  border-left:3px solid var(--gold);
+  padding-left:20px;
+}
+
+/* ─── TYPOGRAPHY ──────────────────────────────── */
+.ch p{
+  font-size:16px;line-height:1.85;
+  color:var(--ink2);font-weight:400;
+  margin-bottom:22px;
+}
+.ch p b,.ch p strong{color:var(--ink);font-weight:600}
+.ch p em{color:var(--gold);font-style:normal;font-weight:500}
+
+.ch h2{
+  font-family:'DM Serif Display',serif;
+  font-size:32px;color:var(--ink);
+  margin:56px 0 18px;line-height:1.2;
+}
+.ch h3{
+  font-size:18px;font-weight:600;color:var(--ink);
+  margin:32px 0 12px;
+}
+.ch h4{
+  font-size:10px;font-weight:600;letter-spacing:3px;
+  text-transform:uppercase;color:var(--gold);
+  margin:24px 0 10px;
+}
+
+/* ─── LISTS ──────────────────────────────────── */
+.ch ul,.ch ol{margin-bottom:24px;padding:0;list-style:none}
+.ch ul li{
+  padding-left:20px;margin-bottom:10px;
+  font-size:16px;line-height:1.75;color:var(--ink2);
+  position:relative;
+}
+.ch ul li::before{
+  content:'–';position:absolute;left:0;
+  color:var(--gold);font-weight:600;
+}
+.ch ol{counter-reset:ol}
+.ch ol li{
+  counter-increment:ol;padding-left:36px;
+  margin-bottom:12px;font-size:16px;line-height:1.75;
+  position:relative;
+}
+.ch ol li::before{
+  content:counter(ol);
+  position:absolute;left:0;
+  font-family:'DM Serif Display',serif;font-style:italic;
+  font-size:18px;color:var(--gold);line-height:1.6;
+  width:24px;text-align:center;
+}
+
+/* ─── PULLQUOTE ──────────────────────────────── */
+.pq{
+  margin:48px 0;
+  padding:36px 40px;
+  background:var(--ink);
+  border-radius:var(--radius);
+  position:relative;overflow:hidden;
+}
+.pq::before{
+  content:'"';
+  position:absolute;right:28px;top:-20px;
+  font-family:'DM Serif Display',serif;
+  font-size:140px;line-height:1;
+  color:rgba(255,255,255,.06);
+  pointer-events:none;
+}
+.pq-text{
+  font-family:'DM Serif Display',serif;
+  font-size:22px;line-height:1.5;
+  color:#fff;font-weight:400;
+  position:relative;z-index:1;
+}
+.pq-attr{
+  margin-top:16px;
+  font-size:10px;font-weight:600;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--gold-lt);
+}
+
+/* ─── NOTE ───────────────────────────────────── */
+.note{
+  margin:24px 0;
+  padding:20px 24px;
+  background:var(--bg2);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  font-size:15px;line-height:1.7;color:var(--ink2);
+}
+.note-lbl{
+  display:block;font-size:10px;font-weight:600;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--gold);margin-bottom:8px;
+}
+
+/* ─── CARD (инфо-блок) ───────────────────────── */
+.card{
+  margin:28px 0;
+  padding:28px 32px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+
+/* ─── ACCORDION ──────────────────────────────── */
+.acc{
+  margin:10px 0;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  background:#fff;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.acc-btn{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px;
+  cursor:pointer;background:none;border:none;
+  width:100%;text-align:left;
+  font-family:'DM Sans',sans-serif;
+  transition:background .2s;
+}
+.acc-btn:hover{background:var(--bg2)}
+.acc.open .acc-btn{background:var(--bg2)}
+.acc-btitle{
+  display:flex;align-items:center;gap:16px;
+}
+.acc-num{
+  font-family:'DM Serif Display',serif;font-style:italic;
+  font-size:20px;color:var(--gold);min-width:26px;line-height:1;
+}
+.acc-name{font-size:16px;font-weight:500;color:var(--ink);line-height:1.3;text-align:left}
+.acc-icon{
+  width:26px;height:26px;
+  border:1px solid var(--line);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--ink3);font-size:16px;font-weight:300;flex-shrink:0;
+  transition:transform .35s ease,background .2s;
+}
+.acc.open .acc-icon{transform:rotate(45deg);background:var(--bg3);color:var(--ink)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1)}
+.acc.open .acc-body{max-height:6000px}
+.acc-inner{padding:0 24px 24px;border-top:1px solid var(--line2);padding-top:20px;margin-top:2px}
+
+/* ─── SIGNS ──────────────────────────────────── */
+.signs{display:flex;flex-direction:column;gap:8px;margin:18px 0}
+.sign{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:12px 16px;
+  background:var(--bg2);
+  border-radius:8px;
+  font-size:15px;line-height:1.65;color:var(--ink2);
+}
+.sign-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--gold);flex-shrink:0;margin-top:6px;
+}
+
+/* ─── PYRAMID ────────────────────────────────── */
+.pyramid{display:flex;flex-direction:column;align-items:center;gap:6px;margin:36px 0;max-width:520px}
+.ptier{
+  text-align:center;padding:16px 24px;
+  background:#fff;border:1px solid var(--line);
+  border-radius:10px;box-shadow:var(--shadow);
+  cursor:pointer;transition:all .25s ease;
+}
+.ptier:hover{border-color:var(--gold);transform:translateX(4px);box-shadow:var(--shadow2)}
+.ptier.t3{width:44%}
+.ptier.t2{width:72%}
+.ptier.t1{width:100%}
+.ptier-lbl{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.ptier-name{font-family:'DM Serif Display',serif;font-size:15px;color:var(--ink)}
+
+/* ─── VIDEO ──────────────────────────────────── */
+.video-wrap{
+  margin:36px 0;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.video-intro{padding:28px 32px 20px}
+.video-intro p{font-size:15px;line-height:1.75;color:var(--ink2)}
+.video-intro strong{color:var(--ink)}
+.video-ratio{position:relative;width:100%;padding-bottom:56.25%;background:#0f0f0f}
+.video-ratio iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+.video-foot{
+  padding:14px 32px;
+  border-top:1px solid var(--line2);
+  font-size:12px;color:var(--ink3);font-style:italic;
+}
+
+/* ─── QUOTES GRID ────────────────────────────── */
+.qgrid{display:flex;flex-direction:column;gap:16px;margin-top:28px}
+.qcard{
+  padding:28px 32px;
+  background:#fff;border:1px solid var(--line);
+  border-radius:var(--radius);box-shadow:var(--shadow);
+  transition:all .3s ease;cursor:default;
+}
+.qcard:hover{box-shadow:var(--shadow2);transform:translateY(-2px);border-color:rgba(184,137,42,.3)}
+.qmark{
+  font-family:'DM Serif Display',serif;font-style:italic;
+  font-size:48px;color:var(--gold);opacity:.4;line-height:.7;margin-bottom:12px;
+}
+.qtext{font-family:'DM Serif Display',serif;font-size:20px;line-height:1.5;color:var(--ink);margin-bottom:12px}
+.qctx{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)}
+
+/* ─── SUMMARY GRID ───────────────────────────── */
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
+.scard{
+  padding:22px;background:#fff;
+  border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);transition:border-color .25s;
+}
+.scard:hover{border-color:rgba(184,137,42,.4)}
+.snum{
+  font-family:'DM Serif Display',serif;font-style:italic;
+  font-size:32px;color:var(--gold);line-height:1;margin-bottom:10px;
+}
+.stitle{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:6px;line-height:1.35}
+.sbody{font-size:13px;color:var(--ink3);line-height:1.6}
+
+/* ─── PRACTICE CARD ──────────────────────────── */
+.prac{
+  margin:36px 0;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow2);
+  overflow:hidden;
+}
+.prac-head{
+  display:flex;align-items:center;gap:0;
+  padding:0;
+  background:var(--ink);
+}
+.prac-num{
+  padding:18px 24px;
+  font-family:'DM Serif Display',serif;font-style:italic;
+  font-size:28px;color:var(--gold-lt);
+  border-right:1px solid rgba(255,255,255,.1);
+  line-height:1;
+}
+.prac-title{
+  padding:18px 24px;
+  font-size:17px;font-weight:500;color:#fff;line-height:1.3;
+}
+.prac-body{padding:28px 32px}
+.prac-body p{font-size:15px;line-height:1.8;color:var(--ink2);margin-bottom:16px}
+.prac-body ol li,.prac-body ul li{font-size:15px}
+
+/* Поле для ответа */
+.answer-block{
+  margin-top:24px;
+  padding-top:22px;
+  border-top:1px dashed var(--line);
+}
+.answer-block-title{
+  font-size:10px;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--ink3);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.answer-block-title::before{content:'✏';font-size:14px}
+.answer-group{margin-bottom:14px}
+.answer-lbl{font-size:13px;font-weight:500;color:var(--ink2);margin-bottom:6px;display:block}
+.answer-field{
+  width:100%;
+  min-height:80px;
+  padding:14px 16px;
+  background:var(--bg2);
+  border:1px solid var(--line);
+  border-radius:10px;
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;line-height:1.7;
+  color:var(--ink);resize:vertical;
+  transition:border-color .2s,box-shadow .2s;
+  outline:none;
+}
+.answer-field:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(184,137,42,.1);
+  background:#fff;
+}
+.answer-field::placeholder{color:var(--ink3);font-style:italic}
+
+.save-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-top:18px;
+  padding:11px 22px;
+  background:var(--ink);
+  color:#fff;
+  border:none;border-radius:50px;
+  font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:500;
+  cursor:pointer;
+  transition:background .2s,transform .15s;
+  letter-spacing:.3px;
+}
+.save-btn:hover{background:var(--gold);transform:translateY(-1px)}
+.save-btn:active{transform:translateY(0)}
+.save-btn svg{width:14px;height:14px;fill:currentColor;flex-shrink:0}
+
+.copy-ok{
+  display:none;
+  font-size:12px;color:var(--gold);font-weight:500;
+  animation:fadeok .3s ease;
+  margin-top:4px;
+}
+@keyframes fadeok{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.save-row{
+  display:flex;align-items:center;flex-wrap:wrap;gap:12px;
+  margin-top:18px;
+}
+
+/* ─── DIVIDER ─────────────────────────────────── */
+.divider{
+  margin:52px 0;
+  display:flex;align-items:center;gap:16px;
+}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--line)}
+.divider-mark{
+  font-family:'DM Serif Display',serif;font-style:italic;
+  font-size:18px;color:var(--gold);opacity:.6;
+}
+
+/* ─── CHAPTER NAV ─────────────────────────────── */
+.ch-nav{
+  margin-top:72px;padding-top:36px;
+  border-top:1px solid var(--line);
+  display:flex;gap:14px;
+}
+.ch-nav-btn{
+  flex:1;padding:18px 20px;
+  background:#fff;border:1px solid var(--line);
+  border-radius:var(--radius);
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+  text-align:left;color:var(--ink);
+  transition:all .25s ease;box-shadow:var(--shadow);
+}
+.ch-nav-btn:hover{border-color:var(--gold);box-shadow:var(--shadow2);transform:translateY(-1px)}
+.ch-nav-btn:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:var(--shadow)}
+.ch-nav-btn.r{text-align:right}
+.ch-nav-lbl{
+  font-size:10px;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--gold);display:block;margin-bottom:6px;
+}
+.ch-nav-title{font-size:14px;color:var(--ink);font-weight:500;line-height:1.3}
+
+/* ─── FOOTER ──────────────────────────────────── */
+footer{
+  margin-left:var(--sidebar);
+  background:var(--ink);
+  padding:44px 80px;
+  transition:margin-left .4s cubic-bezier(.4,0,.2,1);
+}
+footer.wide{margin-left:0}
+.foot-inner{
+  max-width:780px;
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:32px;flex-wrap:wrap;
+}
+.foot-brand{
+  font-family:'DM Serif Display',serif;
+  font-size:18px;color:#fff;margin-bottom:8px;
+}
+.foot-tag{font-size:14px;color:rgba(255,255,255,.5);line-height:1.55;max-width:300px;font-weight:300}
+.foot-links{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start;padding-top:4px}
+.foot-link{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:10px 18px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:50px;
+  color:rgba(255,255,255,.8);
+  text-decoration:none;font-size:13px;font-weight:500;
+  transition:all .25s;
+}
+.foot-link:hover{background:var(--gold);border-color:var(--gold);color:#fff}
+.foot-link svg{width:15px;height:15px;fill:currentColor;flex-shrink:0}
+
+/* ─── MOBILE OVERLAY ──────────────────────────── */
+.overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(26,23,20,.5);z-index:190;
+  backdrop-filter:blur(2px);
+}
+.overlay.on{display:block}
+
+/* ─── RESPONSIVE ──────────────────────────────── */
+@media(max-width:900px){
+  :root{--sidebar:280px}
+  .nav{transform:translateX(-100%)}
+  .nav.mob-open{transform:translateX(0);box-shadow:8px 0 40px rgba(26,23,20,.15)}
+  .toggle{left:0!important;border-radius:0 8px 8px 0}
+  .main,.footer{margin-left:0!important}
+  footer{margin-left:0!important;padding:32px 24px}
+  .page{padding:56px 24px 120px}
+  .ch-h1{font-size:36px}
+  .sgrid{grid-template-columns:1fr}
+  .ch-nav{flex-direction:column}
+  .ptier.t3,.ptier.t2{width:100%}
+  .pq-text{font-size:19px}
+  .prac-body{padding:22px 20px}
+}
+@media(max-width:480px){
+  .page{padding:48px 18px 100px}
+  .ch-h1{font-size:28px}
+  .pq{padding:26px 24px}
+  .pq-text{font-size:17px}
+  .qtext{font-size:18px}
+  .card,.prac-body,.video-intro{padding:20px}
+  .prac-title{font-size:15px;padding:16px 18px}
+  .prac-num{padding:16px 18px;font-size:24px}
+  footer{padding:28px 18px}
+}
+
+/* ─── KONSPEKT HERO ──────────────────────────── */
+.konspekt-hero {
+  padding: 56px 0 48px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 60px;
+}
+.konspekt-hero-tag {
+  font-size: 10px; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 20px;
+}
+.konspekt-hero-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 72px; line-height: 1.0;
+  color: var(--ink); margin-bottom: 28px;
+  letter-spacing: -1.5px;
+}
+.konspekt-hero-author {
+  display: flex; align-items: center; gap: 14px;
+}
+.konspekt-hero-author-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--ink3);
+}
+.konspekt-hero-author-name {
+  font-family: 'DM Serif Display', serif; font-style: italic;
+  font-size: 22px; color: var(--ink);
+}
+@media(max-width:900px) {
+  .konspekt-hero-title { font-size: 48px; }
+}
+@media(max-width:480px) {
+  .konspekt-hero-title { font-size: 36px; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div class="overlay" id="overlay"></div>
+
+<!-- toggle -->
+<button class="toggle" id="toggle" aria-label="меню">
+  <svg id="tog-ico" width="16" height="12" viewBox="0 0 16 12" fill="none">
+    <path d="M1 1h14M1 6h14M1 11h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>
+</button>
+
+<div class="shell">
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<nav class="nav" id="nav">
+  <div class="nav-head">
+    <div class="nav-eyebrow">Конспект эфира</div>
+    <div class="nav-title">Мария<br>Бразговская</div>
+    <div class="nav-sub">Как оказаться в жизни мечты</div>
+  </div>
+  <div class="nav-list">
+    <button class="nav-item on" data-ch="1"><div class="nav-item-inner"><span class="nav-num">i</span><span class="nav-label">Знать ≠ пользоваться</span></div></button>
+    <button class="nav-item" data-ch="2"><div class="nav-item-inner"><span class="nav-num">ii</span><span class="nav-label">Пространство вариантов и карма</span></div></button>
+    <button class="nav-item" data-ch="3"><div class="nav-item-inner"><span class="nav-num">iii</span><span class="nav-label">Три уровня присутствия</span></div></button>
+    <button class="nav-item" data-ch="4"><div class="nav-item-inner"><span class="nav-num">iv</span><span class="nav-label">Как переходить между уровнями</span></div></button>
+    <button class="nav-item" data-ch="5"><div class="nav-item-inner"><span class="nav-num">v</span><span class="nav-label">Принципы исполнения желаний</span></div></button>
+    <button class="nav-item" data-ch="6"><div class="nav-item-inner"><span class="nav-num">vi</span><span class="nav-label">Практики из эфира</span></div></button>
+    <button class="nav-item" data-ch="7"><div class="nav-item-inner"><span class="nav-num">vii</span><span class="nav-label">Цитаты</span></div></button>
+    <button class="nav-item" data-ch="8"><div class="nav-item-inner"><span class="nav-num">viii</span><span class="nav-label">Главное в одном экране</span></div></button>
+  </div>
+  <div class="nav-footer">Конспект создан командой<br>AI Angels Agency</div>
+</nav>
+
+<!-- ══════════ MAIN ══════════ -->
+<div class="main" id="main">
+<div class="page">
+
+<!-- ████ ГЛАВА 1 ████ -->
+<article class="ch on" data-ch="1">
+
+  <!-- HERO -->
+  <div class="konspekt-hero">
+    <div class="konspekt-hero-tag">Конспект эфира</div>
+    <h1 class="konspekt-hero-title">Как оказаться<br>в жизни мечты</h1>
+    <div class="konspekt-hero-author">
+      <span class="konspekt-hero-author-label">Автор</span>
+      <span class="konspekt-hero-author-name">Мария Бразговская</span>
+    </div>
+  </div>
+
+  <header class="ch-head">
+    <div class="ch-tag">Раздел первый</div>
+    <h1 class="ch-h1">Знать ≠<br>пользоваться</h1>
+    <p class="ch-lead">О том, почему очевидные вещи стоит слушать снова — и почему знание не работает, пока лежит в тумбочке.</p>
+  </header>
+
+  <div class="video-wrap">
+    <div class="video-intro">
+      <p><strong>Дорогие друзья,</strong> этот конспект создан по материалам эфира Марии Бразговской, опубликованного на YouTube-канале. Вы можете посмотреть его прямо здесь — или спокойно продолжить читать конспект ниже, здесь собрано всё самое важное.</p>
+    </div>
+    <div class="video-ratio">
+      <iframe
+        src="https://www.youtube.com/embed/5ynYcoETcnc?rel=0"
+        title="Мария Бразговская — Как оказаться в жизни мечты"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen>
+      </iframe>
+    </div>
+    <div class="video-foot">Посмотрите видео — или листайте конспект, это тоже полноценный формат.</div>
+  </div>
+
+  <p>Сегодня мы собрались, чтобы ёмко, конкретно и по делу поговорить о том, <strong>как на самом деле исполняются наши желания</strong>. Всё, что прозвучит, будет максимально полезно — вне зависимости от того, придёте вы на программу или нет.</p>
+  <p>Другое дело, что без поддержки воплотить сказанное будет сложнее. Это честно. Но кто знает — возможно, вы способны.</p>
+
+  <h3>Зачем возвращаться к очевидному</h3>
+  <p>Внутренне очень важно периодически возвращать себя на круги своя. Мы, к сожалению, очень склонны многие вещи забывать. Поэтому даже если вам кажется, что я говорю какую-то <em>очевидную банальщину</em> — слава Богу. Это значит, что внутри что-то вспомнилось, поднялось из давно заархивированных глубин в более доступный уровень.</p>
+
+  <div class="pq">
+    <div class="pq-text">Знать что-то совершенно не означает чем-то пользоваться. Ваша маска против морщин не работает, если она лежит в тумбочке в ванной.</div>
+    <div class="pq-attr">Главная мысль</div>
+  </div>
+
+  <p>И точно так же наши знания не работают, если мы не переводим их на уровень большей доступности. С этого и начнём.</p>
+
+  <div class="note">
+    <span class="note-lbl">Для кого этот конспект</span>
+    Читайте медленно. Это не инструкция «10 шагов к счастью» — это размышление, в которое стоит погружаться без спешки.
+  </div>
+
+  <div class="divider"><span class="divider-mark">✦</span></div>
+
+  <div class="ch-nav">
+    <button class="ch-nav-btn" disabled><span class="ch-nav-lbl">← Назад</span><span class="ch-nav-title">—</span></button>
+    <button class="ch-nav-btn r" data-go="2"><span class="ch-nav-lbl">Далее →</span><span class="ch-nav-title">Пространство вариантов и карма</span></button>
+  </div>
+</article>
+
+<!-- ████ ГЛАВА 2 ████ -->
+<article class="ch" data-ch="2">
+  <header class="ch-head">
+    <div class="ch-tag">Глава вторая</div>
+    <h1 class="ch-h1">Пространство вариантов и карма</h1>
+    <p class="ch-lead">Свобода воли — это и благословение, и наказание. У каждого огромный веер возможных жизней — и несколько ограничений, которые стоит честно увидеть.</p>
+  </header>
+
+  <p>У всех нас есть невероятное количество вариантов прожить жизнь. Господь то ли наказал нас, то ли снабдил нас свободой воли — и это означает, что есть огромное пространство вариантов, которые мы можем выбирать.</p>
+
+  <h3>Есть ли ограничения? Есть</h3>
+  <p>Потому что у каждого из нас всё равно есть <strong>предназначение</strong>. И помимо этого есть ещё то, что называется <strong>внешняя реальность</strong>. С кармой периодически встречаться придётся.</p>
+  <p>Но карма — это не обязательно результат ваших действий в прошлом. Есть ещё карма как <strong>жизненные уроки</strong>. Когда вы, в общем-то, не при делах, но вам нужно с этим уроком как-то повзаимодействовать.</p>
+
+  <div class="card">
+    <h4>История Иова</h4>
+    <p>Иов был праведником. У Господа с дьяволом был скучный вечер. Дьявол сказал, что не найдётся праведника, который никогда не предаст Бога. Бог решил: это будет Иов. У него отняли вообще всё — ни семьи, ни детей, ни денег. Такие были у него страдания, чтобы он всё равно сохранил свет своей души.</p>
+    <div class="note" style="margin:16px 0 0"><span class="note-lbl">К чему это</span>Есть вещи, которые просто случаются. Не нужно их обязательно объяснять своей кармой.</div>
+  </div>
+
+  <h2>А теперь — хорошие новости</h2>
+  <p>Абсолютно все терапевты и даже астрологи сходятся в одной точке:</p>
+
+  <div class="pq">
+    <div class="pq-text">Абсолютно любой человек может жить по социальным меркам прекрасной жизнью.</div>
+    <div class="pq-attr">Точка согласия терапевтов и астрологов</div>
+  </div>
+
+  <p>Не все мы можем заработать состояние, как у Цукерберга. Но если не брать огромный масштаб, то <strong>в целом абсолютно все люди способны умножить свою жизнь на x10</strong>. Причём вне зависимости от вводных.</p>
+
+  <h3>Но так бывает не всегда. Почему?</h3>
+  <ul>
+    <li>Почему одни ходят кругами или зигзагами идут к мечте?</li>
+    <li>А у других это получается гораздо быстрее — может быть, даже по прямой?</li>
+    <li>Каким образом перейти на более позитивную линию развития?</li>
+  </ul>
+
+  <div class="divider"><span class="divider-mark">✦</span></div>
+  <div class="ch-nav">
+    <button class="ch-nav-btn" data-go="1"><span class="ch-nav-lbl">← Назад</span><span class="ch-nav-title">Знать ≠ пользоваться</span></button>
+    <button class="ch-nav-btn r" data-go="3"><span class="ch-nav-lbl">Далее →</span><span class="ch-nav-title">Три уровня присутствия</span></button>
+  </div>
+</article>
+
+<!-- ████ ГЛАВА 3 ████ -->
+<article class="ch" data-ch="3">
+  <header class="ch-head">
+    <div class="ch-tag">Глава третья · ядро эфира</div>
+    <h1 class="ch-h1">Три уровня присутствия</h1>
+    <p class="ch-lead">Рабочая карта. Где вы сейчас? Между уровнями можно мигрировать — и вверх, и вниз.</p>
+  </header>
+
+  <p>Есть несколько уровней нашего присутствия — или, если хотите, нашего развития. Хотя не всегда речь именно о развитии. Речь может идти о <strong>качестве присутствия</strong>.</p>
+
+  <div class="note">
+    <span class="note-lbl">Различение</span>
+    Вы можете быть суперразвитым экспертом, но если не продаёте себя на рынке — вы там не присутствуете. Развитие и присутствие — это разное.
+  </div>
+
+  <div class="pyramid">
+    <div class="ptier t3"><div class="ptier-lbl">Уровень III</div><div class="ptier-name">Жизнь мечты · реализация</div></div>
+    <div class="ptier t2"><div class="ptier-lbl">Уровень II</div><div class="ptier-name">Стабильность · «нормально живу»</div></div>
+    <div class="ptier t1"><div class="ptier-lbl">Уровень I</div><div class="ptier-name">Неприкаянное место</div></div>
+  </div>
+
+  <div class="acc open">
+    <button class="acc-btn"><div class="acc-btitle"><span class="acc-num">I</span><span class="acc-name">Неприкаянное место</span></div><span class="acc-icon">+</span></button>
+    <div class="acc-body"><div class="acc-inner">
+      <p>На самом нижнем уровне — <strong>постоянный кризис и постоянная борьба</strong>. Человек внутри себя достаточно пуст. «Что бы я ни делала, прям не выбраться». Это не острый кризис, а <em>хроническое состояние</em>.</p>
+      <h4>Как это выглядит в жизни</h4>
+      <div class="signs">
+        <div class="sign"><span class="sign-dot"></span><span>Никак не получается построить счастливые отношения. Они все какие-то пустые.</span></div>
+        <div class="sign"><span class="sign-dot"></span><span>Никак не получается доход, чтобы ощущалось: «окей, можно дышать».</span></div>
+        <div class="sign"><span class="sign-dot"></span><span>Постоянно что-то сыпется, постоянно что-то падает.</span></div>
+        <div class="sign"><span class="sign-dot"></span><span>Или просто скучно. Стабильно скучно.</span></div>
+      </div>
+      <p>Жить невероятно тяжело. Здесь есть <strong>борьба</strong>, <strong>давление</strong>, <strong>застревание</strong>. Можно описать это как застревание в родовых путях.</p>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <button class="acc-btn"><div class="acc-btitle"><span class="acc-num">II</span><span class="acc-name">Стабильность без вкуса</span></div><span class="acc-icon">+</span></button>
+    <div class="acc-body"><div class="acc-inner">
+      <p>Жизнь вроде бы наладилась. Есть работа, отношения, ресурсы. Но <strong>огня нет</strong>. Комфортный, привычный, безопасный круг.</p>
+      <div class="signs">
+        <div class="sign"><span class="sign-dot"></span><span>«У меня всё нормально» — главная фраза этого уровня. Не плохо. Но и не «вау».</span></div>
+        <div class="sign"><span class="sign-dot"></span><span>Желания становятся слабыми. Сложно ответить: «А чего ты на самом деле хочешь?»</span></div>
+        <div class="sign"><span class="sign-dot"></span><span>Радость как будто приглушена. Не отчаяние — просто фон.</span></div>
+      </div>
+      <p>Парадокс: с этого уровня <strong>сложнее всего двигаться вверх</strong> — нет острой боли, которая толкала бы. Стабильность удобно держит.</p>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <button class="acc-btn"><div class="acc-btitle"><span class="acc-num">III</span><span class="acc-name">Жизнь мечты · реализация</span></div><span class="acc-icon">+</span></button>
+    <div class="acc-body"><div class="acc-inner">
+      <div class="pq" style="margin:0 0 20px">
+        <div class="pq-text">Что такое ад? Ад — это то, где душа не может выразить саму себя, не может пережить себя.</div>
+        <div class="pq-attr">Ключевое определение</div>
+      </div>
+      <p>Реализация — это <strong>не про достижения</strong>. Это про выражение того, кем вы являетесь. Достижения приходят как побочный эффект.</p>
+      <div class="signs">
+        <div class="sign"><span class="sign-dot"></span><span>Ощущение «своей» жизни. Не идеальной — но своей.</span></div>
+        <div class="sign"><span class="sign-dot"></span><span>Желания возвращаются. Ясные, живые, узнаваемые.</span></div>
+        <div class="sign"><span class="sign-dot"></span><span>Появляется доверие. Не наивность — а доверие.</span></div>
+        <div class="sign"><span class="sign-dot"></span><span>Душа выражает себя через то, что вы делаете.</span></div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="divider"><span class="divider-mark">✦</span></div>
+  <div class="ch-nav">
+    <button class="ch-nav-btn" data-go="2"><span class="ch-nav-lbl">← Назад</span><span class="ch-nav-title">Пространство вариантов</span></button>
+    <button class="ch-nav-btn r" data-go="4"><span class="ch-nav-lbl">Далее →</span><span class="ch-nav-title">Как переходить между уровнями</span></button>
+  </div>
+</article>
+
+<!-- ████ ГЛАВА 4 ████ -->
+<article class="ch" data-ch="4">
+  <header class="ch-head">
+    <div class="ch-tag">Глава четвёртая</div>
+    <h1 class="ch-h1">Как переходить между уровнями</h1>
+    <p class="ch-lead">Что мешает движению вверх, а что помогает. И почему «доверие» — это не просто красивое слово.</p>
+  </header>
+
+  <h2>Что держит на нижних уровнях</h2>
+
+  <div class="acc open">
+    <button class="acc-btn"><div class="acc-btitle"><span class="acc-num">I</span><span class="acc-name">Привычка к борьбе</span></div><span class="acc-icon">+</span></button>
+    <div class="acc-body"><div class="acc-inner"><p>На первом уровне борьба становится способом существования. Без неё человек не понимает, что делать. Если вдруг становится хорошо — тревога. <em>«Что-то слишком тихо. Где подвох?»</em> И неосознанно создаётся следующая буря.</p></div></div>
+  </div>
+  <div class="acc">
+    <button class="acc-btn"><div class="acc-btitle"><span class="acc-num">II</span><span class="acc-name">Стагнация на среднем уровне</span></div><span class="acc-icon">+</span></button>
+    <div class="acc-body"><div class="acc-inner"><p>На втором уровне нас держит <strong>страх потерять стабильность</strong>. Любое движение требует риска, а риск — это возможный спуск вниз. Мы предпочитаем «нормально» вместо «вдруг хуже».</p></div></div>
+  </div>
+  <div class="acc">
+    <button class="acc-btn"><div class="acc-btitle"><span class="acc-num">III</span><span class="acc-name">Слабость желаний</span></div><span class="acc-icon">+</span></button>
+    <div class="acc-body"><div class="acc-inner"><p>Чем дольше живёшь в режиме «нормально», тем тише желания. А без живого желания пространство не понимает, куда вас вести. Намерение пусто — пространство тоже пусто отвечает.</p></div></div>
+  </div>
+  <div class="acc">
+    <button class="acc-btn"><div class="acc-btitle"><span class="acc-num">IV</span><span class="acc-name">Родовые сценарии</span></div><span class="acc-icon">+</span></button>
+    <div class="acc-body"><div class="acc-inner"><p>Иногда дело в родовой карме. Семейные программы «нам не положено», «деньги — это плохо», «счастья мало бывает» — работают тихо, но мощно. С ними нужна отдельная работа.</p></div></div>
+  </div>
+
+  <h2>Что помогает движению вверх</h2>
+
+  <div class="card"><h4>Намерение в пространстве</h4><p>Это то, что автор называет <strong>«поставить меточку в пространстве»</strong>. Намерение — не желание-каприз, а ясно сформулированное «куда я двигаюсь». Без него любые усилия рассыпаются.</p></div>
+
+  <div class="card"><h4>Поле и общность</h4><p><em>«Где двое соберутся во имя моё, там я»</em>. Когда много людей сфокусированы на одном — они становятся очень видимы для пространства. Именно поэтому на больших программах «всё сбывается — ложкой можно есть».</p></div>
+
+  <div class="pq">
+    <div class="pq-text">Доверие — это когда ты не знаешь, как будет, но ты знаешь, что будет прекрасно.</div>
+    <div class="pq-attr">Определение от автора</div>
+  </div>
+
+  <div class="card"><h4>Радость как инструмент</h4><p><strong>«Если начать радоваться, то многое само по себе сбудется».</strong> Из радости пространство откликается. Из боли и сжатия — медленно. Поэтому самое разумное в декабре — сместить фокус с проблем на вкус к жизни.</p></div>
+
+  <div class="divider"><span class="divider-mark">✦</span></div>
+  <div class="ch-nav">
+    <button class="ch-nav-btn" data-go="3"><span class="ch-nav-lbl">← Назад</span><span class="ch-nav-title">Три уровня присутствия</span></button>
+    <button class="ch-nav-btn r" data-go="5"><span class="ch-nav-lbl">Далее →</span><span class="ch-nav-title">Принципы исполнения желаний</span></button>
+  </div>
+</article>
+
+<!-- ████ ГЛАВА 5 ████ -->
+<article class="ch" data-ch="5">
+  <header class="ch-head">
+    <div class="ch-tag">Глава пятая</div>
+    <h1 class="ch-h1">Принципы исполнения желаний</h1>
+    <p class="ch-lead">Не по инстаграмным карточкам, а по логике, в которой сходятся психология, эзотерика и здравый смысл.</p>
+  </header>
+
+  <div class="card"><h4>Принцип 1</h4><h3 style="margin-top:6px;margin-bottom:10px">Желание должно быть живым</h3><p>Мёртвые желания — те, которые мы повторяем по инерции. <strong>Живое желание</strong> — то, от которого внутри становится тепло, страшновато и интересно одновременно. Если страшновато — почти всегда хороший знак.</p></div>
+  <div class="card"><h4>Принцип 2</h4><h3 style="margin-top:6px;margin-bottom:10px">Намерение > мечтательность</h3><p>Между «я бы хотела» и «я иду к этому» — пропасть. Первое — воздух. Второе — намерение. Намерение всегда подразумевает готовность двигаться, даже если непонятно как.</p></div>
+  <div class="card"><h4>Принцип 3</h4><h3 style="margin-top:6px;margin-bottom:10px">Реализация — не про достижения</h3><p>Первый вопрос — не «что достичь?», а «что во мне просится наружу и не может выразиться?». <strong>Реализуюсь</strong> — значит выражу то, кем я являюсь.</p></div>
+  <div class="card"><h4>Принцип 4</h4><h3 style="margin-top:6px;margin-bottom:10px">Поле сильнее одиночки</h3><p>Человек в поле других, идущих туда же — это другая физика. Всё, что объединяет людей вокруг общего намерения, работает быстрее одиночной работы.</p></div>
+
+  <div class="pq">
+    <div class="pq-text">Чудо всегда есть. И чудо всегда приходит. Важно его пригласить.</div>
+    <div class="pq-attr">Один из ключевых тезисов эфира</div>
+  </div>
+
+  <div class="card"><h4>Принцип 6</h4><h3 style="margin-top:6px;margin-bottom:10px">Лояльность к себе</h3><p>Не предавать своё желание из-за чужого мнения. Не объяснять себе, почему вам «не положено». Это базовый материал, из которого собирается жизнь мечты.</p></div>
+  <div class="card"><h4>Принцип 7</h4><h3 style="margin-top:6px;margin-bottom:10px">Расслабление сильнее напряжения</h3><p>Желания исполняются <em>не через сжатые зубы</em>. Перенапряжение — главный сигнал пространству, что вы боитесь. И тогда — часто — не получается.</p></div>
+
+  <div class="divider"><span class="divider-mark">✦</span></div>
+  <div class="ch-nav">
+    <button class="ch-nav-btn" data-go="4"><span class="ch-nav-lbl">← Назад</span><span class="ch-nav-title">Как переходить между уровнями</span></button>
+    <button class="ch-nav-btn r" data-go="6"><span class="ch-nav-lbl">Далее →</span><span class="ch-nav-title">Практики из эфира</span></button>
+  </div>
+</article>
+
+<!-- ████ ГЛАВА 6 — ПРАКТИКИ ████ -->
+<article class="ch" data-ch="6">
+  <header class="ch-head">
+    <div class="ch-tag">Глава шестая · прикладное</div>
+    <h1 class="ch-h1">Практики<br>из эфира</h1>
+    <p class="ch-lead">Конкретные действия — прямо сейчас. Напишите ответы здесь и перенесите в свой документ после (ответы скопируются по кнопке ниже каждой практики).</p>
+  </header>
+
+  <!-- ПРАКТИКА 1 -->
+  <div class="prac">
+    <div class="prac-head"><span class="prac-num">01</span><span class="prac-title">Честная диагностика уровня</span></div>
+    <div class="prac-body">
+      <p>Ответьте на три вопроса ниже — честно (никто не увидит). Это не самокритика, а точка отсчёта.</p>
+      <div class="answer-block" id="ab1">
+        <div class="answer-block-title">Ваши ответы</div>
+        <div class="answer-group">
+          <label class="answer-lbl">Где я сейчас на самом деле? Уровень I, II или III — и почему я так думаю?</label>
+          <textarea class="answer-field" placeholder="Напишите честно — что узнаёте в описании?"></textarea>
+        </div>
+        <div class="answer-group">
+          <label class="answer-lbl">Какие признаки этого уровня я узнаю в своей жизни прямо сейчас?</label>
+          <textarea class="answer-field" placeholder="Конкретные ситуации за последний месяц…"></textarea>
+        </div>
+        <div class="answer-group">
+          <label class="answer-lbl">На какой уровень я хочу перейти — и что во мне этому сопротивляется?</label>
+          <textarea class="answer-field" placeholder="Что держит на месте?"></textarea>
+        </div>
+        <div class="save-row">
+          <button class="save-btn" onclick="saveAnswers('ab1','Практика 01 · Диагностика уровня')">
+            <svg viewBox="0 0 16 16"><path d="M13 1H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4l-2-3zM8 13a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm3-9H4V2h7v2z"/></svg>
+            Скопировать ответы
+          </button>
+          <span class="copy-ok" id="ok-ab1">✓ Скопировано — вставьте в свой блокнот</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ПРАКТИКА 2 -->
+  <div class="prac">
+    <div class="prac-head"><span class="prac-num">02</span><span class="prac-title">Постановка меточки в пространстве</span></div>
+    <div class="prac-body">
+      <p>Сформулируйте одно намерение на следующий год — именно одно. Попробуйте оба варианта ниже и почувствуйте разницу. Прочитайте вслух ту, которая откликнулась, и дайте себе минуту тишины.</p>
+      <div class="answer-block" id="ab2">
+        <div class="answer-block-title">Ваши ответы</div>
+        <div class="answer-group">
+          <label class="answer-lbl">Я хочу…</label>
+          <textarea class="answer-field" style="min-height:64px" placeholder="Мечтательная версия — напишите, что приходит первым…"></textarea>
+        </div>
+        <div class="answer-group">
+          <label class="answer-lbl">Я двигаюсь к…</label>
+          <textarea class="answer-field" style="min-height:64px" placeholder="Намеренная версия — как будто уже в пути…"></textarea>
+        </div>
+        <div class="answer-group">
+          <label class="answer-lbl">Какая формулировка вызвала больше тепла и лёгкого страха — и почему?</label>
+          <textarea class="answer-field" style="min-height:64px" placeholder="Живое намерение всегда немного пугает — это хороший знак…"></textarea>
+        </div>
+        <div class="save-row">
+          <button class="save-btn" onclick="saveAnswers('ab2','Практика 02 · Меточка в пространстве')">
+            <svg viewBox="0 0 16 16"><path d="M13 1H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4l-2-3zM8 13a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm3-9H4V2h7v2z"/></svg>
+            Скопировать ответы
+          </button>
+          <span class="copy-ok" id="ok-ab2">✓ Скопировано — вставьте в свой блокнот</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ПРАКТИКА 3 -->
+  <div class="prac">
+    <div class="prac-head"><span class="prac-num">03</span><span class="prac-title">Возвращение знаний на поверхность</span></div>
+    <div class="prac-body">
+      <p>Найдите 1–2 книги (или конспекта), которые когда-то сильно повлияли, но давно не перечитывались. Положите их туда, где вы их видите каждый день — не на полку, а на стол или в сумку. Правило: раз в неделю открывать наугад и читать одну страницу.</p>
+      <div class="answer-block" id="ab3">
+        <div class="answer-block-title">Ваши ответы</div>
+        <div class="answer-group">
+          <label class="answer-lbl">Книги или материалы, которые хочу вернуть в поле зрения:</label>
+          <textarea class="answer-field" placeholder="Названия, авторы, форматы…"></textarea>
+        </div>
+        <div class="answer-group">
+          <label class="answer-lbl">Конкретное место, куда я их положу:</label>
+          <textarea class="answer-field" style="min-height:64px" placeholder="Например: рабочий стол, тумбочка у кровати, сумка…"></textarea>
+        </div>
+        <div class="save-row">
+          <button class="save-btn" onclick="saveAnswers('ab3','Практика 03 · Возвращение знаний')">
+            <svg viewBox="0 0 16 16"><path d="M13 1H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4l-2-3zM8 13a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm3-9H4V2h7v2z"/></svg>
+            Скопировать ответы
+          </button>
+          <span class="copy-ok" id="ok-ab3">✓ Скопировано — вставьте в свой блокнот</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ПРАКТИКА 4 -->
+  <div class="prac">
+    <div class="prac-head"><span class="prac-num">04</span><span class="prac-title">Сместить фокус на вкус к жизни</span></div>
+    <div class="prac-body">
+      <p>Каждое утро — 3 минуты. Называйте 3 вещи, которым хотите сегодня порадоваться. Не «за что я благодарна» — а именно <em>чему порадуюсь сегодня</em>. Мелочи работают лучше всего. Вечером сверяйтесь: что из этого случилось?</p>
+      <div class="answer-block" id="ab4">
+        <div class="answer-block-title">Прямо сейчас</div>
+        <div class="answer-group">
+          <label class="answer-lbl">3 вещи, которым я хочу порадоваться сегодня:</label>
+          <textarea class="answer-field" placeholder="Мелочи лучше всего — тренируется навык замечать…"></textarea>
+        </div>
+        <div class="answer-group">
+          <label class="answer-lbl">Что мешает мне радоваться прямо сейчас?</label>
+          <textarea class="answer-field" style="min-height:64px" placeholder="Необязательно — но полезно это назвать…"></textarea>
+        </div>
+        <div class="save-row">
+          <button class="save-btn" onclick="saveAnswers('ab4','Практика 04 · Фокус на радость')">
+            <svg viewBox="0 0 16 16"><path d="M13 1H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4l-2-3zM8 13a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm3-9H4V2h7v2z"/></svg>
+            Скопировать ответы
+          </button>
+          <span class="copy-ok" id="ok-ab4">✓ Скопировано — вставьте в свой блокнот</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ПРАКТИКА 5 -->
+  <div class="prac">
+    <div class="prac-head"><span class="prac-num">05</span><span class="prac-title">Приглашение чуда</span></div>
+    <div class="prac-body">
+      <p>Найдите момент тишины — утром или перед сном. Вслух или мысленно произнесите своими словами: <em>«Я приглашаю в свою жизнь чудо. Я открыта для него»</em>. Не уточняйте форму — пространство справится лучше. Повторяйте каждый день.</p>
+      <div class="note" style="margin:0 0 20px"><span class="note-lbl">Важно</span>Работает только из состояния доверия, а не «ну давай попробую, всё равно ничего не будет». В первом случае — будет.</div>
+      <div class="answer-block" id="ab5">
+        <div class="answer-block-title">Ваши ответы</div>
+        <div class="answer-group">
+          <label class="answer-lbl">Моя формулировка приглашения чуда своими словами:</label>
+          <textarea class="answer-field" style="min-height:64px" placeholder="Напишите так, как вам откликается — не обязательно дословно…"></textarea>
+        </div>
+        <div class="answer-group">
+          <label class="answer-lbl">Что во мне сейчас мешает довериться?</label>
+          <textarea class="answer-field" style="min-height:64px" placeholder="Полезно назвать то, что стоит между вами и чудом…"></textarea>
+        </div>
+        <div class="save-row">
+          <button class="save-btn" onclick="saveAnswers('ab5','Практика 05 · Приглашение чуда')">
+            <svg viewBox="0 0 16 16"><path d="M13 1H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4l-2-3zM8 13a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm3-9H4V2h7v2z"/></svg>
+            Скопировать ответы
+          </button>
+          <span class="copy-ok" id="ok-ab5">✓ Скопировано — вставьте в свой блокнот</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ПРАКТИКА 6 -->
+  <div class="prac">
+    <div class="prac-head"><span class="prac-num">06</span><span class="prac-title">Найти своё поле</span></div>
+    <div class="prac-body">
+      <p>Выпишите 5–7 человек, с которыми общаетесь чаще всего. Посмотрите на среднюю траекторию вашего окружения — куда оно движется? Подумайте, где стоит добавить присутствия, чтобы поле тянуло вас вверх.</p>
+      <div class="answer-block" id="ab6">
+        <div class="answer-block-title">Ваши ответы</div>
+        <div class="answer-group">
+          <label class="answer-lbl">Люди из моего ближайшего окружения и куда они движутся:</label>
+          <textarea class="answer-field" placeholder="Имя — вверх / в сторону / по кругу…" style="min-height:120px"></textarea>
+        </div>
+        <div class="answer-group">
+          <label class="answer-lbl">Где я хочу добавить присутствия (среда, сообщество, программа):</label>
+          <textarea class="answer-field" style="min-height:70px" placeholder="Конкретно — что это за место или круг людей?"></textarea>
+        </div>
+        <div class="save-row">
+          <button class="save-btn" onclick="saveAnswers('ab6','Практика 06 · Моё поле')">
+            <svg viewBox="0 0 16 16"><path d="M13 1H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4l-2-3zM8 13a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm3-9H4V2h7v2z"/></svg>
+            Скопировать ответы
+          </button>
+          <span class="copy-ok" id="ok-ab6">✓ Скопировано — вставьте в свой блокнот</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><span class="divider-mark">✦</span></div>
+  <div class="ch-nav">
+    <button class="ch-nav-btn" data-go="5"><span class="ch-nav-lbl">← Назад</span><span class="ch-nav-title">Принципы исполнения желаний</span></button>
+    <button class="ch-nav-btn r" data-go="7"><span class="ch-nav-lbl">Далее →</span><span class="ch-nav-title">Цитаты</span></button>
+  </div>
+</article>
+
+<!-- ████ ГЛАВА 7 ████ -->
+<article class="ch" data-ch="7">
+  <header class="ch-head">
+    <div class="ch-tag">Глава седьмая</div>
+    <h1 class="ch-h1">Цитаты, которые стоит запомнить</h1>
+    <p class="ch-lead">Самое ёмкое из эфира. Сохраните те, что откликнулись.</p>
+  </header>
+  <div class="qgrid">
+    <div class="qcard"><div class="qmark">"</div><div class="qtext">Знать что-то совершенно не означает чем-то пользоваться. Маска против морщин не работает, если она лежит в тумбочке.</div><div class="qctx">О том, почему очевидное стоит повторять</div></div>
+    <div class="qcard"><div class="qmark">"</div><div class="qtext">Абсолютно любой человек может жить по социальным меркам прекрасной жизнью.</div><div class="qctx">Точка согласия терапевтов и астрологов</div></div>
+    <div class="qcard"><div class="qmark">"</div><div class="qtext">Можно быть суперразвитым экспертом, но если не продаёте себя на рынке — вы там не присутствуете.</div><div class="qctx">Об уровнях присутствия</div></div>
+    <div class="qcard"><div class="qmark">"</div><div class="qtext">Что такое ад? Ад — это то, где душа не может выразить саму себя, не может пережить себя.</div><div class="qctx">О реализации</div></div>
+    <div class="qcard"><div class="qmark">"</div><div class="qtext">Реализация — это не про достижения. Это про то, чтобы пережить тех, кем мы являемся на самом деле.</div><div class="qctx">Главный переворот эфира</div></div>
+    <div class="qcard"><div class="qmark">"</div><div class="qtext">Если начать радоваться, то многое просто само по себе сбудется.</div><div class="qctx">О радости как инструменте</div></div>
+    <div class="qcard"><div class="qmark">"</div><div class="qtext">Чудо всегда есть. И чудо всегда приходит. Важно его пригласить.</div><div class="qctx">Самая часто повторяемая мысль в эфире</div></div>
+    <div class="qcard"><div class="qmark">"</div><div class="qtext">Доверие — это когда ты не знаешь, как будет, но ты знаешь, что будет прекрасно.</div><div class="qctx">Определение доверия</div></div>
+    <div class="qcard"><div class="qmark">"</div><div class="qtext">Где двое соберутся во имя моё, там я. Чем больше людей, сфокусированных на одном — тем видимее они для пространства.</div><div class="qctx">О силе общего поля</div></div>
+  </div>
+  <div class="divider"><span class="divider-mark">✦</span></div>
+  <div class="ch-nav">
+    <button class="ch-nav-btn" data-go="6"><span class="ch-nav-lbl">← Назад</span><span class="ch-nav-title">Практики из эфира</span></button>
+    <button class="ch-nav-btn r" data-go="8"><span class="ch-nav-lbl">Далее →</span><span class="ch-nav-title">Главное в одном экране</span></button>
+  </div>
+</article>
+
+<!-- ████ ГЛАВА 8 ████ -->
+<article class="ch" data-ch="8">
+  <header class="ch-head">
+    <div class="ch-tag">Глава восьмая · финал</div>
+    <h1 class="ch-h1">Главное<br>в одном экране</h1>
+    <p class="ch-lead">Если вернётесь через месяц — начните отсюда.</p>
+  </header>
+
+  <div class="sgrid">
+    <div class="scard"><div class="snum">01</div><div class="stitle">Знание не работает в тумбочке</div><div class="sbody">Возвращайте знакомое на поверхность. Очевидное забывается быстрее всего.</div></div>
+    <div class="scard"><div class="snum">02</div><div class="stitle">Поле возможностей огромно</div><div class="sbody">Свобода воли, ограничения и карма существуют одновременно. Возможностей больше.</div></div>
+    <div class="scard"><div class="snum">03</div><div class="stitle">Три уровня присутствия</div><div class="sbody">Неприкаянность · стабильность без вкуса · реализация. Между ними можно мигрировать.</div></div>
+    <div class="scard"><div class="snum">04</div><div class="stitle">Развитие ≠ присутствие</div><div class="sbody">Можно быть развитым и не присутствовать. Можно присутствовать и расти на ходу.</div></div>
+    <div class="scard"><div class="snum">05</div><div class="stitle">Реализация — не про достижения</div><div class="sbody">Это про выражение того, кем вы являетесь. Достижения — побочный эффект.</div></div>
+    <div class="scard"><div class="snum">06</div><div class="stitle">Намерение ставит меточку</div><div class="sbody">Без живого намерения пространство не понимает, куда вас вести.</div></div>
+    <div class="scard"><div class="snum">07</div><div class="stitle">Поле сильнее одиночки</div><div class="sbody">Среда, общность, общее намерение работают быстрее одиночной работы.</div></div>
+    <div class="scard"><div class="snum">08</div><div class="stitle">Радость — это инструмент</div><div class="sbody">Из радости пространство откликается. Из боли и сжатия — почти нет.</div></div>
+    <div class="scard"><div class="snum">09</div><div class="stitle">Чудо нужно пригласить</div><div class="sbody">Оно стоит у двери. Откройте её. Доверие — ключ.</div></div>
+    <div class="scard"><div class="snum">10</div><div class="stitle">Нереализованность — это ад</div><div class="sbody">Самое тяжёлое — «я не могу выразить себя», а не «у меня нет чего-то».</div></div>
+  </div>
+
+  <h2>Что сделать в ближайшие 24 часа</h2>
+  <ol>
+    <li><strong>Пройти Практику 01</strong> — честная диагностика уровня. 15 минут с блокнотом.</li>
+    <li><strong>Поставить меточку</strong> — сформулировать одно намерение на следующий год.</li>
+    <li><strong>Пригласить чудо</strong> — одна минута. Повторять каждый день.</li>
+  </ol>
+
+  <div class="pq">
+    <div class="pq-text">Будьте открыты для чуда — и живите всей душой. Когда душа выражает себя — открывается всё остальное.</div>
+    <div class="pq-attr">Мария Бразговская · финальное напутствие</div>
+  </div>
+
+  <div class="divider"><span class="divider-mark">✦ ✦ ✦</span></div>
+  <div class="ch-nav">
+    <button class="ch-nav-btn" data-go="7"><span class="ch-nav-lbl">← Назад</span><span class="ch-nav-title">Цитаты</span></button>
+    <button class="ch-nav-btn r" data-go="1"><span class="ch-nav-lbl">В начало ↑</span><span class="ch-nav-title">Знать ≠ пользоваться</span></button>
+  </div>
+</article>
+
+</div><!-- /page -->
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="foot-inner">
+    <div>
+      <div class="foot-brand">AI Angels Agency</div>
+      <div class="foot-tag">Помогаем трансформировать материалы экспертов<br>в вау-опыт студентов</div>
+    </div>
+    <div class="foot-links">
+      <a href="https://t.me/svetlana_tsyro" target="_blank" rel="noopener" class="foot-link">
+        <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+        @svetlana_tsyro
+      </a>
+      <a href="https://t.me/yuliegeffroy" target="_blank" rel="noopener" class="foot-link">
+        <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+        @yuliegeffroy
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── sidebar ── */
+const nav = document.getElementById('nav');
+const mainEl = document.getElementById('main');
+const footEl = document.getElementById('footer');
+const toggleBtn = document.getElementById('toggle');
+const overlayEl = document.getElementById('overlay');
+const mob = () => window.innerWidth <= 900;
+let open = true;
+
+function openNav(){
+  if(mob()){
+    nav.classList.add('mob-open');
+    overlayEl.classList.add('on');
+  } else {
+    nav.style.transform='';
+    mainEl.classList.remove('wide');
+    footEl.classList.remove('wide');
+    toggleBtn.style.left='';
+  }
+  open=true;
+}
+function closeNav(){
+  if(mob()){
+    nav.classList.remove('mob-open');
+    overlayEl.classList.remove('on');
+  } else {
+    nav.style.transform='translateX(-100%)';
+    mainEl.classList.add('wide');
+    footEl.classList.add('wide');
+    toggleBtn.style.left='0';
+  }
+  open=false;
+}
+
+if(mob()){closeNav();}
+
+toggleBtn.addEventListener('click',()=>{ open?closeNav():openNav(); });
+overlayEl.addEventListener('click',closeNav);
+window.addEventListener('resize',()=>{ if(!mob()&&!open){closeNav();} });
+
+/* ── nav ── */
+const items = document.querySelectorAll('.nav-item');
+const chs   = document.querySelectorAll('.ch');
+const prog  = document.getElementById('progress');
+const total = chs.length;
+
+function goTo(n){
+  n = String(n);
+  items.forEach(i=>i.classList.toggle('on', i.dataset.ch===n));
+  chs.forEach(c=>c.classList.toggle('on', c.dataset.ch===n));
+  prog.style.width = (parseInt(n)/total*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(mob()) closeNav();
+}
+
+items.forEach(i=>i.addEventListener('click',()=>goTo(i.dataset.ch)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>goTo(b.dataset.go)));
+prog.style.width = (1/total*100)+'%';
+
+/* ── accordions ── */
+document.querySelectorAll('.acc-btn').forEach(b=>{
+  b.addEventListener('click',()=>b.parentElement.classList.toggle('open'));
+});
+
+/* ── save answers ── */
+function saveAnswers(blockId, title){
+  const block = document.getElementById(blockId);
+  const groups = block.querySelectorAll('.answer-group');
+  let text = title + '\n' + '─'.repeat(44) + '\n\n';
+
+  groups.forEach((g, i)=>{
+    const lbl = g.querySelector('.answer-lbl');
+    const field = g.querySelector('.answer-field');
+    if(!lbl || !field) return;
+    const question = lbl.textContent.trim();
+    const answer = field.value.trim() || '(не заполнено)';
+    text += 'Вопрос ' + (i+1) + ': ' + question + '\n';
+    text += 'Ответ: ' + answer + '\n\n';
+  });
+
+  text += '─'.repeat(44) + '\nКонспект Марии Бразговской · AI Angels Agency';
+
+  const showOk = ()=>{
+    const ok = document.getElementById('ok-'+blockId);
+    ok.style.display='inline';
+    setTimeout(()=>ok.style.display='none', 4000);
+  };
+
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(showOk).catch(()=>fallbackCopy(text, showOk));
+  } else {
+    fallbackCopy(text, showOk);
+  }
+}
+
+function fallbackCopy(text, cb){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+  document.body.appendChild(ta);
+  ta.focus();ta.select();
+  try{ document.execCommand('copy'); cb(); } catch(e){ alert('Не удалось скопировать. Попробуйте ещё раз.'); }
+  document.body.removeChild(ta);
+}
+</script>
+</body>
+</html>
